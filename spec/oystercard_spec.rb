@@ -54,5 +54,10 @@ describe Oystercard do
       expect {subject.touch_in}.to raise_error("The money is not enough in card.")
     end
 
+    it "should deduct minimum fare from balance after touch out" do
+      subject.top_up(2)
+      expect{subject.deduct 1}.to change{ subject.balance}.by -1
+    end
+
 
 end
