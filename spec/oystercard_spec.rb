@@ -31,13 +31,19 @@ describe Oystercard do
 
     describe '#journey' do
       it 'is not in a journey' do
-        expect(subject).not_to be_in_journey
+        expect(subject.be_in_journey).to eq false
       end
 
       it 'can touch in' do
         subject.touch_in
-        expect(subject).to be_in_journey
+        expect(subject.be_in_journey).to eq true
       end
+
+      it 'can touch out' do
+        subject.touch_in
+        subject.touch_out
+        expect(subject.be_in_journey).to eq false
+      end 
     end
 
 end
