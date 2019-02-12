@@ -1,6 +1,8 @@
 require 'oystercard'
 
+
 describe Oystercard do
+  let (:entry_station ) {double :entry_station}
   it "balance is zero" do
     expect(subject.balance).to eq(0)
   end
@@ -38,6 +40,7 @@ describe Oystercard do
       end
 
       it 'can touch in' do
+        subject.top_up(2)
         subject.touch_in
         expect(subject.be_in_journey).to eq true
       end
@@ -57,6 +60,14 @@ describe Oystercard do
     it "should deduct minimum fare from balance after touch out" do
       subject.top_up(2)
       expect{subject.touch_out }.to change{ subject.balance}.by -1
+    end
+
+    it "remebers the entry station after touch in" do
+      subject.top_up(2)
+
+      subject.touch_in(entry_station)
+
+      expect(subject.entry_station).to eq entry_station
     end
 
 
