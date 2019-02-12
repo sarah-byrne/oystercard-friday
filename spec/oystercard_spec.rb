@@ -30,6 +30,9 @@ describe Oystercard do
     end
 
     describe '#journey' do
+      before(:each) do
+        subject.top_up(2)
+      end
       it 'is not in a journey' do
         expect(subject.be_in_journey).to eq false
       end
@@ -43,7 +46,13 @@ describe Oystercard do
         subject.touch_in
         subject.touch_out
         expect(subject.be_in_journey).to eq false
-      end 
+      end
     end
+    it "should not allow to touch in when less than £1 is in the card" do
+      subject.top_up(0.1)
+
+      expect {subject.touch_in}.to raise_error("The money is not enough in card.")
+    end
+
 
 end
