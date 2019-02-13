@@ -3,6 +3,7 @@ require 'oystercard'
 
 describe Oystercard do
   let (:entry_station ) {double :entry_station}
+  let (:exit_station) {double()}
   it "balance is zero" do
     expect(subject.balance).to eq(0)
   end
@@ -22,15 +23,6 @@ describe Oystercard do
     end
   end
 
-    # describe '#deduct' do
-    #   it { is_expected.to respond_to(:deduct).with(1).argument }
-    #
-    # #   it 'deducts an amount from the balance' do
-    # #     subject.top_up(20)
-    # #     expect{ subject.deduct 3}.to change{ subject.balance }.by -3
-    # #   end
-    # end
-
     describe '#journey' do
       before(:each) do
         subject.top_up(2)
@@ -47,7 +39,7 @@ describe Oystercard do
 
       it 'can touch out' do
         subject.touch_in
-        subject.touch_out
+        subject.touch_out(exit_station)
         expect(subject.be_in_journey).to eq false
       end
     end
@@ -59,7 +51,7 @@ describe Oystercard do
 
     it "should deduct minimum fare from balance after touch out" do
       subject.top_up(2)
-      expect{subject.touch_out }.to change{ subject.balance}.by -1
+      expect{subject.touch_out(exit_station) }.to change{ subject.balance}.by -1
     end
 
     it "remebers the entry station after touch in" do
@@ -68,6 +60,17 @@ describe Oystercard do
       subject.touch_in(entry_station)
 
       expect(subject.entry_station).to eq entry_station
+    end
+
+    it "gets created with an empty list of journeys" do
+      expect(subject.journeys).to eq([])
+    end
+
+    it 'stores a journey to the list of journeys' do
+      subject.top_up(10)
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      expect(subject.journeys).to eq [{entry_station: entry_station, exit_station: exit_station}]
     end
 
 
