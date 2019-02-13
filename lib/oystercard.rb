@@ -42,5 +42,4 @@ class Oystercard
 
   private :deduct
 
-
 end
