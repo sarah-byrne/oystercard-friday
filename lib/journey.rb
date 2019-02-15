@@ -9,6 +9,7 @@ class Journey
   def finish(ending_station = nil)
     @ending_station = ending_station
     @state = "finished"
+    self
   end
 
   def complete?
