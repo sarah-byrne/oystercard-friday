@@ -6,10 +6,10 @@ class Oystercard
 
   attr_reader :balance, :entry_station, :journeys, :current_journey
 
-  def initialize(journey_class = Journey)
+  def initialize(journey_class = Journey, journey_log = JourneyLog.new)
     @balance = 0
     @in_journey = false
-    @journeys = []
+    @journeys = journey_log
     @journey_class = journey_class
 
   end
