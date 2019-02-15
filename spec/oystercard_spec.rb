@@ -19,7 +19,7 @@ describe Oystercard do
     it 'raises an error if max balance is exceeded' do
       max_balance = Oystercard::MAX_BALANCE
       subject.top_up(max_balance)
-      expect{ subject.top_up 1 }.to raise_error 'Max balance of #{max_balance} exceeded'
+      expect{ subject.top_up 1 }.to raise_error "Max balance of #{Oystercard::MAX_BALANCE} exceeded"
     end
   end
 
@@ -30,13 +30,13 @@ describe Oystercard do
 
       it 'can touch in' do
         journey_double = double :journey
-        journey_class_double = double :journey_class, new: journey_double
-        card = Oystercard.new(journey_class_double)
+        journey_log_double = double :journey_log
+        card = Oystercard.new(journey_log_double)
         card.top_up(2)
-        card.touch_in
-        expect(card.current_journey).to eq journey_double
+        allow(journey_log_double).to receive(:start)
+        card.touch_in(entry_station)
       end
-      
+
     end
     it "should not allow to touch in when less than £1 is in the card" do
       subject.top_up(0.1)
@@ -44,28 +44,22 @@ describe Oystercard do
       expect {subject.touch_in}.to raise_error("The money is not enough in card.")
     end
 
-    it "should deduct minimum fare from balance after touch out" do
-      journey_double = double :journey, finish: {}
-      journey_class_double = double :journey_class, new: journey_double
-      card = Oystercard.new(journey_class_double)
+    it "should deduct journey fare from balance after touch out" do
+      journey_double = double :journey, finish: {}, fare: 1
+      journey_log_double = double :journey_log, last: journey_double, finish: {}, start: {}
+      card = Oystercard.new(journey_log_double)
       card.top_up(2)
-      card.touch_in
+      card.touch_in(entry_station)
       expect{card.touch_out(exit_station) }.to change{ card.balance}.by -1
     end
 
-    it "gets created with an empty list of journeys" do
-      expect(subject.journeys).to eq([])
+    it "gets created with a new journey log" do
+      journey_double = double :journey
+      journey_log_double = double :journey_log
+      card = Oystercard.new(journey_log_double)
+      expect(card.journey_log).to eq(journey_log_double)
     end
 
-    it 'stores a journey to the list of journeys' do
-      journey_double = double :journey, finish: {}
-      journey_class_double = double :journey_class, new: journey_double
-      card = Oystercard.new(journey_class_double)
-      card.top_up(2)
-      card.touch_in
-      card.touch_out(exit_station)
-      expect(card.journeys).to eq [journey_double]
-    end
 
 
 end

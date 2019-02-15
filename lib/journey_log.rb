@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class JourneyLog
   attr_reader :journeys
 
@@ -12,13 +14,25 @@ class JourneyLog
 
 
   def finish(exit_station)
-    @journeys << @current_journey.finish(exit_station)
+    @journeys << current_journey.finish(exit_station)
   end
+
+  def last
+    @journeys.last
+  end
+
+  def journeys
+    @journeys.dup
+  end 
 
   private
 
   def current_journey
-    @current_journey if @current_journey != nil
-    @journey_class.new
+    if @current_journey == nil || @current_journey.ending_station != nil
+      @journey_class.new
+    else
+      @current_journey
+    end
   end
+
 end

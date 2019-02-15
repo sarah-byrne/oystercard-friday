@@ -1,6 +1,9 @@
 class Journey
   attr_reader :state, :starting_station, :ending_station
 
+  MIN_FARE = 1
+  PENALTY_FARE = 6
+
   def initialize(starting_station = nil)
     @state = "started"
     @starting_station = starting_station
@@ -18,9 +21,9 @@ class Journey
   end
 
   def fare
-    return 6 if @starting_station == nil
-    return 6 if @ending_station == nil
-    1
+    return PENALTY_FARE if
+      @starting_station == nil || @ending_station == nil
+    MIN_FARE
   end
 
 end

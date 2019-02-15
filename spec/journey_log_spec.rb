@@ -4,6 +4,7 @@ describe JourneyLog do
   it 'starts a new journey' do
     station_double = double :station
     journey_double = double :journey
+    allow(journey_double).to receive(:ending_station).and_return(nil)
     journey_class_double = double :journey_class, new: journey_double
     log = JourneyLog.new(journey_class_double)
     log.start(station_double)
@@ -14,6 +15,7 @@ describe JourneyLog do
     station_double = double :station
     journey_double = double :journey
     allow(journey_double).to receive(:finish).and_return(journey_double)
+    allow(journey_double).to receive(:ending_station).and_return(station_double)
     journey_class_double = double :journey_class, new: journey_double
     log = JourneyLog.new(journey_class_double)
     log.start(station_double)
